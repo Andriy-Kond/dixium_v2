@@ -1,23 +1,18 @@
+.navBar {
+  display: flex;
+  gap: 10px;
+}
+
 .link {
-  font-weight: normal;
-  color: #000;
+  color: var(--white_color);
   transition: transform 0.3s ease;
+  text-decoration: none;
 
-  /* &.active {
-    font-weight: bold;
-    color: #ff4500;
-  } */
-  /* 
-  &.pending {
-    color: red;
+  &:hover {
   }
-
-  &.transitioning {
-    transform: scale(1.05);
-  } */
 }
 
 .active {
   font-weight: bold;
-  color: #ff4500;
+  color: #ffbfa0;
 }

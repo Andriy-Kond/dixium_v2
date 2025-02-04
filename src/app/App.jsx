@@ -3,16 +3,22 @@ import { lazy, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { selectUserToken } from "./selectors";
-import { HomePage, SharedLayout } from "common/pages";
+import HomePage from "common/pages/HomePage";
+import SharedLayout from "common/pages/SharedLayout";
+
 import PrivateRoute from "common/components/navigation/PvivateRoute";
 import PublicRoute from "common/components/navigation/PublicRoute";
 
 import { setIsLoggedIn } from "features/auth/authSlice";
 import { useGetUserByTokenQuery } from "features/users/usersSlice";
 
-const ContactsPage = lazy(() => import("common/pages/ContactsPage"));
+import { players } from "resources/players";
+import { deck } from "resources/decks";
+
 const RegisterPage = lazy(() => import("common/pages/RegisterPage"));
 const LoginPage = lazy(() => import("common/pages/LoginPage"));
+const ContactsPage = lazy(() => import("common/pages/ContactsPage"));
+const GamePage = lazy(() => import("common/pages/GamePage"));
 const NotFoundPage = lazy(() => import("common/pages/NotFoundPage"));
 
 export default function App() {
@@ -31,6 +37,15 @@ export default function App() {
     }
   }, [dispatch, isSuccess]);
 
+  const shuffleDeck = deck => {
+    return deck
+      .map(card => ({ card, sortIndex: Math.random() })) // Додати випадковий індекс
+      .sort((a, b) => a.sortIndex - b.sortIndex) // Сортування за цим індексом
+      .map(({ card }) => card); // Повертаю тільки карти
+  };
+
+  const newDeck = shuffleDeck(deck);
+
   return (
     <>
       {/* Перевірка !isFetching && - щоб при залогіненому користувачі не мигала спочатку сторінка Login і потім Contacts */}
@@ -41,9 +56,10 @@ export default function App() {
 
             <Route element={<PrivateRoute redirectTo="/login" />}>
               <Route path="/contacts" element={<ContactsPage />} />
+              <Route path="/game" element={<GamePage />} />
             </Route>
 
-            <Route element={<PublicRoute redirectTo="/contacts" />}>
+            <Route element={<PublicRoute redirectTo="/game" />}>
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/login" element={<LoginPage />} />
             </Route>
